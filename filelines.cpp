@@ -31,6 +31,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <chrono>  // 添加 chrono 头文件
 #include "find_most_freq.h"
 #include "filelines_baseline.h"
 
@@ -41,10 +42,18 @@ int main(int argc,char *argv[]){
         printf("Usage: %s filepath",argv[0]);
         return -1;
     }
+
+    auto start = std::chrono::high_resolution_clock::now();  // 开始计时
+
     for(int i=0;i<MAX_LEN;i++) line_num[i]=0;
     total_line_num=0;
     filelines_baseline(argv[1],&total_line_num,line_num);
     uint32_t most_freq_len,most_freq_len_linenum; 
     find_most_freq_line(line_num,&most_freq_len,&most_freq_len_linenum);
+    
+    auto end = std::chrono::high_resolution_clock::now();  // 结束计时
+    std::chrono::duration<double, std::micro> duration = end - start;  // 计算执行时间（微秒）
+
     printf("%d %d %d\n",total_line_num,most_freq_len,most_freq_len_linenum);
+    printf("执行时间: %f 微秒\n", duration.count());  // 输出执行时间（微秒）
 }
